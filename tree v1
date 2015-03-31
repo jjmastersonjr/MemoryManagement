@@ -1,0 +1,208 @@
+package BuddySystemAllocation;
+
+
+public class Tree {
+	private Tree left;
+	private Tree right;
+	private int size;
+	private int sizeLeft; //the available space underneath this node
+	private Process lp;
+	private Tree parent;
+
+	public Tree(int s, Tree p){
+		size = s;
+		left = null;
+		right = null;
+		lp = null;
+		sizeLeft = size;
+		parent = p;
+	}
+	
+	
+	public void allocate(Process p){
+		Tree c = null;
+		if(p.getSize()<= size/2){
+			if(left==null && right == null){
+				generateChildren();
+			}
+			c = findSuitableChild(p);
+			c.allocate(p);
+		}
+		else
+			assignProcess(p);
+	}
+	
+
+	public void generateChildren(){
+		left = new Tree(size/2,this);
+		right = new Tree(size/2,this);
+	}
+	public Tree findSuitableChild(Process p){
+		if(left.getSizeLeft() >= p.getSize() && left.getLp() == null)
+			return left;
+		else if(right.getSizeLeft() <= p.getSize() && right.getLp() ==null)
+			return right;
+		else
+		{
+			System.out.println("There is no more room in the tree");
+			return null;
+		}
+	}
+
+	public int getSizeLeft(){
+		return sizeLeft;
+	}
+	
+	/**
+	 * 
+	 * @param p
+	 */
+	public void assignProcess(Process p){
+		lp = p;
+		sizeLeft = 0;
+		System.out.println("The " + p.getName() + " was assigned to a node with size " + size);
+	}
+
+	public void deallocate(Process p){
+		Tree n = find(p);
+		n.setLp(null);
+		update(p);
+	}
+
+	public void update(Process p){
+		updateSizes(p);
+		//This if statements 
+		if((parent.getLeft().getLp() == null) && (parent.getRight().getLp() == null)){
+			parent.left = null;
+			parent.right = null;
+		}
+	}
+
+	public Tree find(Process p){
+		if(lp.equals(p)){
+			return this;
+		}
+		else{
+			if(left == null && right == null)
+				return null;
+			else{
+				Tree node1;
+				Tree node2;
+				node1=right.find(p);
+				node2 = left.find(p);
+				if(node1 != null)
+					return node1;
+				else if (node2 != null)
+					return node2;
+				else
+					return null;
+			}
+		}
+	}
+
+
+
+	//As of right now this method is only used for allocate method
+	//if we want to use this method for deallocated as well, then
+	//we change this method
+	public void updateNumbers(Process p){
+		size = size - p.getSize();
+		if(!(parent.equals(null)))
+			parent.updateNumbers(p);
+		else{
+			//indicator
+		}
+	}
+
+	public void updateSizes(Process p){
+		size = size - p.getSize();
+		if(!(parent.equals(null)))
+			parent.updateSizes(p);
+		else{
+			//indicator
+		}
+	}
+	public Tree getLeft() {
+		return left;
+	}
+	public void setLeft(Tree left) {
+		this.left = left;
+	}
+	public Tree getRight() {
+		return right;
+	}
+	public void setRight(Tree right) {
+		this.right = right;
+	}
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
+	public Process getLp() {
+		return lp;
+	}
+	public void setLp(Process lp) {
+		this.lp = lp;
+	}
+	public void setParent(Tree parent) {
+		this.parent = parent;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((left == null) ? 0 : left.hashCode());
+		result = prime * result + ((lp == null) ? 0 : lp.hashCode());
+		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+		result = prime * result + ((right == null) ? 0 : right.hashCode());
+		result = prime * result + size;
+		result = prime * result + sizeLeft;
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tree other = (Tree) obj;
+		if (left == null) {
+			if (other.left != null)
+				return false;
+		} else if (!left.equals(other.left))
+			return false;
+		if (lp == null) {
+			if (other.lp != null)
+				return false;
+		} else if (!lp.equals(other.lp))
+			return false;
+		if (parent == null) {
+			if (other.parent != null)
+				return false;
+		} else if (!parent.equals(other.parent))
+			return false;
+		if (right == null) {
+			if (other.right != null)
+				return false;
+		} else if (!right.equals(other.right))
+			return false;
+		if (size != other.size)
+			return false;
+		if (sizeLeft != other.sizeLeft)
+			return false;
+		return true;
+	}
+	
+	
+
+}
