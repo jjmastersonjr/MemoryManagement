@@ -1,0 +1,17 @@
+	public void deallocate(Process p){
+		Tree n = find(p);
+		manageDeallocation(n);
+		n.updateParentSize((n.getSize()*-1));
+	}
+	
+	public void manageDeallocation(Tree n)
+	{
+		if(n.parent.getLeft().getLp() == null || n.parent.getRight().getLp() == null)
+		{
+			n.parent.resetChildren();
+		}
+		else if(n.parent.getLeft().getLp() != null || n.parent.getRight().getLp() != null)
+			n.setLp(null);
+		else
+			manageDeallocation(n.parent);
+	}
