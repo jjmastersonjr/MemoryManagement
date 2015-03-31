@@ -1,0 +1,17 @@
+	public void allocate(Process p){
+		Tree c = null;
+		if(p.getSize()<= size/2){
+			if(left==null && right == null){
+				generateChildren();
+			}
+			c = findSuitableChild(p);
+			if(c != null)
+				c.allocate(p);
+			else
+				System.out.println("There is no more room in the tree");
+		}
+		else if(lp==null)
+			assignProcess(p);
+		else
+			System.out.println("Cannot fit");
+	}
