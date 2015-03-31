@@ -1,0 +1,36 @@
+	public Tree find(Process p){
+		
+		if(areNoChildren() && lp != null)
+		{	
+			if(lp.equals(p))
+				return this;
+			else
+				return null;
+		}
+			
+		else if(areNoChildren() && lp == null)
+			return null;
+		else{
+			Tree tree1 = right.find(p);
+			Tree tree2 = left.find(p);
+			if(tree1 != null)
+			{
+				return tree1;	
+			}
+			else if (tree2 != null)
+			{
+				return tree2;
+			}
+			else
+				//at this point neither of this node's children have the process
+				return null;
+			
+		}
+		
+		
+	}
+	
+	public boolean areNoChildren()
+	{
+		return left == null;
+	}
